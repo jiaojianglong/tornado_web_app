@@ -4,7 +4,7 @@ import os
 
 ROOT = os.path.dirname(__file__)
 
-APPS = ["auth"]
+APPS = "auth"
 
 DB_INFO = {
     "DB_USER": "root",
@@ -13,4 +13,5 @@ DB_INFO = {
     "DB_PORT": "3306",
     "DB_NAME": "tornado_web"
 }
-SQLALCHEMY_MIGRATE_REPO = os.path.join(os.path.dirname(ROOT), "migrations")
+
+JWT_SECRET = "as34gf3d8ge5r6he0r7"

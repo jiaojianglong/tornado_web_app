@@ -6,7 +6,10 @@ import json
 
 from tornado.web import RequestHandler
 from app.database import Session
-from app.errors import CodeError, NotFoundError
+from app.errors import CodeError, NotFoundError, UnauthorizedError
+import jwt
+from app.settings import JWT_SECRET
+
 
 
 class UnauthorizedHandler(RequestHandler):
@@ -17,13 +20,30 @@ class UnauthorizedHandler(RequestHandler):
 
     # 通过 id 获取数据
 
-    def item(self, id):
+    def item(self, id: str):
         if not self._datamodel_:
             raise CodeError("重写该方法或定义 __database__ 属性")
 
         item = self._datamodel_.query.get(id)
         if item is None:
             raise NotFoundError("{}:{}".format(self._datamodel_.__tablename__, id))
+
+        if not item.is_enable:
+            raise NotFoundError("已删除:{}:{}".format(self._datamodel_.__tablename__, id))
+
+        self.write(item.to_dict())
+
+    def delete(self, id: str):
+        if not self._datamodel_:
+            raise CodeError("重写该方法或定义 __database__ 属性")
+
+        item = self._datamodel_.query.get(id)
+        if item is None:
+            raise NotFoundError("{}:{}".format(self._datamodel_.__tablename__, id))
+
+        item.is_enable = False
+        self.db_session.add(item)
+        self.db_session.commit()
         self.write(item.to_dict())
 
     def prepare(self):
@@ -53,6 +73,16 @@ class UnauthorizedHandler(RequestHandler):
 class BaseHandler(UnauthorizedHandler):
     def _initialize(self):
         pass
+
+    def prepare(self):
+        super(BaseHandler, self).prepare()
+        jwt_cookie = self.get_cookie("jwt_cookie")
+        info = jwt.decode(jwt_cookie, JWT_SECRET, True, algorithm='HS256')
+        from app.auth.models.user import UserModel
+        user = UserModel.search(info.get("username"))
+        if not user:
+            raise UnauthorizedError()
+        self.user = user
 
     def on_connection_close(self):
         pass

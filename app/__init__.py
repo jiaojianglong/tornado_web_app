@@ -36,7 +36,8 @@ def load_headlers():
     for app in apps:
         try:
             app_module = __import__(app)
-            handlers.extend(app_module.handlers)
+            app_handlers = [(app_module.base_url+handler[0], handler[1])for handler in app_module.handlers]
+            handlers.extend(app_handlers)
         except NameError:
             logging.error("app init error: {}".format(app))
     return handlers

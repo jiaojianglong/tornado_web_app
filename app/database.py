@@ -34,7 +34,7 @@ class BaseModel(Base, SerializerMixin):
     createtime = Column(DateTime, default=func.now(), comment='创建时间')
     updatetime = Column(DateTime, default=func.now(), onupdate=func.now(), comment='修改时间')
     is_enable = Column(Boolean, default=True, comment="是否可用")
-
+    serialize_only = ("id", "createtime", "updatetime", "is_enable")
     @classmethod
     def get(cls, id):
         return cls.query.get(cls.id == id)

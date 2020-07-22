@@ -45,3 +45,12 @@ class NotFoundError(HTTPError):
             400, reason, reason=reason
         )
         self.arg_name = reason
+
+
+class AlreadyExistError(HTTPError):
+    def __init__(self, arg_name: str) -> None:
+        reason = "already exist: {}".format(arg_name)
+        super(AlreadyExistError, self).__init__(
+            400, reason, reason=reason
+        )
+        self.arg_name = reason

@@ -4,12 +4,13 @@
 # @time: 2020/07/13
 from .handlers.user import LoginHandler, UserHandler
 
+base_url = "/api/v1/user"
 handlers = [
-    (r"/user/login", LoginHandler),
-    (r"/user", UserHandler),
-    (r"/user/([a-zA-Z0-9]+)", UserHandler)
+    (r"/login", LoginHandler),
+    (r"/", UserHandler),
+    (r"/([a-zA-Z0-9]+)", UserHandler)
 ]
 
 __all__ = [
-    "handlers"
+    "handlers", "base_url"
 ]

@@ -17,7 +17,6 @@ class LogFormatter(tornado.log.LogFormatter):
 
 def format_log():
     def format_log_():
-        print("format_log:", logging.getLogger().handlers)
         for logger_handler in logging.getLogger().handlers:
             logger_handler.setFormatter(LogFormatter())
 
