@@ -1,0 +1,11 @@
+Generic single-database configuration.
+
+alembic init alembic
+alembic revision --autogenerate -m "create_user_table"
+alembic upgrade head
+
+查看记录和历史
+alembic history
+
+回退上一个升级的版本
+alembic downgrade -1
