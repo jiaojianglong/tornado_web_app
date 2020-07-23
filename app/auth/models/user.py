@@ -3,20 +3,35 @@
 # author: jiaojianglong
 # @time: 2020/07/14
 
-from sqlalchemy import Column, String
-from app.database import BaseModel
+import json
+
+from sqlalchemy import Column, String, Text, Table, Integer, ForeignKey
+from sqlalchemy.orm import relationship
+
+from app.errors import CodeError, NotFoundError
 from app.utils.tools import md5
-from app.errors import CodeError
+from auth.database import BaseModel
+
+user_group = Table(
+    "user_group",
+    BaseModel.metadata,
+    Column("user_id", Integer, ForeignKey("user.id"), nullable=False, primary_key=True),
+    Column("group_id", Integer, ForeignKey("group.id"), nullable=False, primary_key=True),
+    keep_existing=True
+)
 
 
 class UserModel(BaseModel):
     __tablename__ = "user"
-    __table_args__ = {"extend_existing": True}
-    username = Column(String(length=30), comment='用户名')
-    password_code = Column(String(length=128), comment='密码')
-    email = Column(String(length=64), comment="邮箱")
 
-    serialize_rules = ("username", "email")
+    # 二次初始化异常引入， 覆盖已存在对象
+    __table_args__ = {"keep_existing": True}
+    username = Column(String(length=30), nullable=False, unique=True, comment='用户名')
+    password_code = Column(String(length=128), nullable=False, comment='密码')
+    email = Column(String(length=64), comment="邮箱")
+    groups = relationship("GroupModel", secondary=user_group)
+
+    serialize_rules = ("username", "email", "groups")
 
     @property
     def password(self):
@@ -31,10 +46,39 @@ class UserModel(BaseModel):
 
     @classmethod
     def is_exist(cls, username: str):
-        user = cls.search(username)
+        user = cls.search_one(username)
         return bool(user)
 
     @classmethod
-    def search(cls, username: str):
-        user = cls.query.filter(cls.username == username, cls.is_enable is True).first()
+    def search_one(cls, username: str):
+        user = cls.query.filter(cls.username == username, cls.is_enable == 1).first()
         return user
+
+    @classmethod
+    def get_user_by_name(cls, username: str):
+        user = cls.query.filter(cls.username == username).first()
+        if user is None:
+            raise NotFoundError("{} username:{}".format(cls.__tablename__, username))
+        if user.is_enable is False:
+            raise NotFoundError("已删除 {} username:{}".format(cls.__tablename__, username))
+        return user
+
+
+class GroupModel(BaseModel):
+    __tablename__ = "group"
+    # 二次初始化异常引入， 覆盖已存在对象
+    __table_args__ = {"keep_existing": True}
+
+    groupname = Column(String(length=30), nullable=False, unique=True, comment='组名')
+    source_ = Column(Text(), default="[]", nullable=False, comment="资源")
+
+    users = relationship("UserModel", secondary=user_group)
+
+    serialize_rules = ("groupname", "sources", "users")
+    @property
+    def sources(self):
+        return json.loads(self.source_)
+
+    @sources.setter
+    def sources(self, val: list):
+        self.source_ = json.dumps(val)

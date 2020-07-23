@@ -4,19 +4,20 @@
 # @time: 2020/07/15
 
 import jwt
-from app.base_handler import UnauthorizedHandler, BaseHandler
-from ..models.user import UserModel
+
 from app.errors import AlreadyExistError
 from app.errors import BadRequestError, ForbiddenError
 from app.settings import JWT_SECRET
+from auth.base_handler import BaseHandler
+from ..models.user import UserModel
 
 
-class LoginHandler(UnauthorizedHandler):
+class LoginHandler(BaseHandler):
     def post(self):
         username = self.get_argument("username")
         password = self.get_argument("password")
 
-        user = UserModel.search(username)
+        user = UserModel.search_one(username)
         if not user:
             raise BadRequestError("username wrong")
         if not user.valid_password(password):
@@ -71,3 +72,8 @@ class UserHandler(BaseHandler):
         self.db_session.add(self.user)
         self.db_session.commit()
         self.write(self.to_json(self.user))
+
+    def delete(self, id: str):
+        if self.user.id != int(id):
+            raise ForbiddenError()
+        super(UserHandler, self).delete(id)

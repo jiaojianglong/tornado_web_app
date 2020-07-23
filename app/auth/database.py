@@ -7,6 +7,7 @@ from sqlalchemy import create_engine
 from sqlalchemy import Column, Integer, DateTime, Boolean, func
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
+import weakref
 from sqlalchemy_serializer import SerializerMixin
 from app.settings import DB_INFO
 from app.errors import NotFoundError
@@ -39,7 +40,16 @@ class BaseModel(Base, SerializerMixin):
 
     @classmethod
     def get_or_404(cls, id: str):
-        object = cls.query.get(id)
-        if object is None:
-            raise NotFoundError("{} id:{}".format(cls.__tablename_, id))
-        return object
+        item = cls.query.get(id)
+        if item is None:
+            raise NotFoundError("{}:{}".format(cls.__tablename__, id))
+
+        if not item.is_enable:
+            raise NotFoundError("已删除:{}:{}".format(cls.__tablename__, id))
+        return item
+
+    @classmethod
+    def remove(cls, id: str):
+        item = cls.get_or_404(id)
+        item.is_enable = False
+        return item
