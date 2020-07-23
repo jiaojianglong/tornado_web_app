@@ -11,7 +11,6 @@ import jwt
 from app.settings import JWT_SECRET
 
 
-
 class UnauthorizedHandler(RequestHandler):
     _datamodel_ = ""
 
@@ -77,6 +76,8 @@ class BaseHandler(UnauthorizedHandler):
     def prepare(self):
         super(BaseHandler, self).prepare()
         jwt_cookie = self.get_cookie("jwt_cookie")
+        if not jwt_cookie:
+            raise UnauthorizedError()
         info = jwt.decode(jwt_cookie, JWT_SECRET, True, algorithm='HS256')
         from app.auth.models.user import UserModel
         user = UserModel.search(info.get("username"))

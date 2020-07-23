@@ -11,10 +11,12 @@ from app.errors import CodeError
 
 class UserModel(BaseModel):
     __tablename__ = "user"
-    __table_args__ = {"extend_existing":True}
+    __table_args__ = {"extend_existing": True}
     username = Column(String(length=30), comment='用户名')
     password_code = Column(String(length=128), comment='密码')
     email = Column(String(length=64), comment="邮箱")
+
+    serialize_rules = ("username", "email")
 
     @property
     def password(self):
@@ -34,5 +36,5 @@ class UserModel(BaseModel):
 
     @classmethod
     def search(cls, username: str):
-        user = cls.query.filter(cls.username == username, cls.is_enable == True).first()
+        user = cls.query.filter(cls.username == username, cls.is_enable is True).first()
         return user

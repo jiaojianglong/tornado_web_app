@@ -7,7 +7,7 @@ import jwt
 from app.base_handler import UnauthorizedHandler, BaseHandler
 from ..models.user import UserModel
 from app.errors import AlreadyExistError
-from app.errors import UnauthorizedError, BadRequestError
+from app.errors import BadRequestError, ForbiddenError
 from app.settings import JWT_SECRET
 
 
@@ -21,7 +21,7 @@ class LoginHandler(UnauthorizedHandler):
             raise BadRequestError("username wrong")
         if not user.valid_password(password):
             raise BadRequestError("password wrong")
-        headers = {"alg": "HS256","typ": "JWT"}
+        headers = {"alg": "HS256", "typ": "JWT"}
 
         payload = {
             "username": user.username,
@@ -34,9 +34,10 @@ class LoginHandler(UnauthorizedHandler):
         self.write(user.to_dict())
 
 
-class UnloginHandler(BaseHandler):
+class LogoutHandler(BaseHandler):
     def post(self):
-        pass
+        self.clear_cookie("jwt_cookie")
+        self.write("success")
 
 
 class UserHandler(BaseHandler):
@@ -59,11 +60,13 @@ class UserHandler(BaseHandler):
         self.db_session.commit()
         self.write(self.to_json(user))
 
-    def put(self):
+    def put(self, id: str):
+        if self.user.id != int(id):
+            raise ForbiddenError()
         old_password = self.get_argument("old_password")
         new_password = self.get_argument("new_password")
         if not self.user.valid_password(old_password):
-            raise UnauthorizedError()
+            raise BadRequestError("old_password wrong")
         self.user.password = new_password
         self.db_session.add(self.user)
         self.db_session.commit()

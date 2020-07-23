@@ -9,6 +9,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy_serializer import SerializerMixin
 from app.settings import DB_INFO
+from app.errors import NotFoundError
 
 Base = declarative_base()
 engine = create_engine('mysql+pymysql://%s:%s@%s:%s/%s?charset=utf8' %
@@ -35,6 +36,10 @@ class BaseModel(Base, SerializerMixin):
     updatetime = Column(DateTime, default=func.now(), onupdate=func.now(), comment='修改时间')
     is_enable = Column(Boolean, default=True, comment="是否可用")
     serialize_only = ("id", "createtime", "updatetime", "is_enable")
+
     @classmethod
-    def get(cls, id):
-        return cls.query.get(cls.id == id)
+    def get_or_404(cls, id: str):
+        object = cls.query.get(id)
+        if object is None:
+            raise NotFoundError("{} id:{}".format(cls.__tablename_, id))
+        return object
