@@ -1,5 +1,21 @@
 *.pyc
 *.pyo
 *.so
+**/__pycache__/
 *.class
 .idea/
+
+app_web/.DS_Store
+app_web/node_modules/
+app_web/dist/
+app_web/npm-debug.log*
+app_web/yarn-debug.log*
+app_web/yarn-error.log*
+
+# Editor directories and files
+app_web/.idea
+app_web/.vscode
+app_web/*.suo
+app_web/*.ntvs*
+app_web/*.njsproj
+app_web/*.sln

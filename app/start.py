@@ -4,10 +4,11 @@
 import logging
 
 import tornado.ioloop
-import tornado.web
 import tornado.options
+import tornado.web
+
 from app import make_app
-from app.log import format_log
+from utils.log import format_log
 
 
 def main():

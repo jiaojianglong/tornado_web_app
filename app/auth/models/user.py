@@ -10,7 +10,7 @@ from sqlalchemy.orm import relationship
 
 from app.errors import CodeError, NotFoundError
 from app.utils.tools import md5
-from auth.database import BaseModel
+from app.database import BaseModel
 
 user_group = Table(
     "user_group",
@@ -24,8 +24,6 @@ user_group = Table(
 class UserModel(BaseModel):
     __tablename__ = "user"
 
-    # 二次初始化异常引入， 覆盖已存在对象
-    __table_args__ = {"keep_existing": True}
     username = Column(String(length=30), nullable=False, unique=True, comment='用户名')
     password_code = Column(String(length=128), nullable=False, comment='密码')
     email = Column(String(length=64), comment="邮箱")
@@ -66,8 +64,6 @@ class UserModel(BaseModel):
 
 class GroupModel(BaseModel):
     __tablename__ = "group"
-    # 二次初始化异常引入， 覆盖已存在对象
-    __table_args__ = {"keep_existing": True}
 
     groupname = Column(String(length=30), nullable=False, unique=True, comment='组名')
     source_ = Column(Text(), default="[]", nullable=False, comment="资源")

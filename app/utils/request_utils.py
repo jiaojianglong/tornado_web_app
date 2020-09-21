@@ -5,9 +5,11 @@
 
 import requests
 import requests.adapters
+from aiohttp import ClientSession
 
 session = requests.session()
 
+async_session = ClientSession()
 
 class Requests():
     def __init__(self, timeout=10, max_retries=3):
@@ -47,8 +49,37 @@ class Requests():
             self.max_retries = max_retries
         return self.session.delete(url, **kwargs)
 
+class AsyncRequests():
+    def __init__(self, session=None):
+        self.session = session or async_session
+
+    async def get(self, url, **kwargs):
+        async with self.session.get(url, **kwargs) as resp:
+            # res = await resp
+            print(await resp.text())
+            return resp
+
+    async def post(self, url, **kwargs):
+        async  with self.session.post(url, **kwargs) as resp:
+            await resp
+
+    async def put(self, url, **kwargs):
+        async with self.session.put(url, **kwargs) as resp:
+            await resp
+
+    async def delete(self, url, **kwargs):
+        async with self.session.delete(url, **kwargs) as resp:
+            await resp
+
+    async def fetch(self):
+        self.session
+
 
 requests = Requests()
-
+async_requeste = AsyncRequests()
 if __name__ == '__main__':
-    res = requests.get("http://www.baidu.com")
+    # res = requests.get("http://www.baidu.com")
+    import asyncio
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(async_requeste.get("http://www.baidu.com"))
+    loop.close()

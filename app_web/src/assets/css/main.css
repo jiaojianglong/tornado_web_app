@@ -1,0 +1,72 @@
+.fade-enter-active {
+    transition: all .3s ease;
+    overflow: hidden;
+}
+.fade-enter, .fade-leave-to {
+    height: 20px;
+    padding: 0 10px;
+    /* opacity: 0; */
+    background-color:#000;
+}
+.form-control {
+    border-radius:4px;
+}
+@media (min-width: 768px) {
+    .compact {
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+    .compact-left {
+        padding-left: 5px;
+    }
+    .compact-right {
+        padding-right: 5px;
+    }
+}
+
+.box {
+    border-top: none;
+}
+.input-group {
+    margin-bottom: 5px;
+}
+.input-group-addon {
+    background-color:#337ab7 !important;
+    color:#fff;
+    border-color:#337ab7 !important;
+}
+.modal-footer button {
+    width:120px;
+}
+.item-delete {
+    color:#d9534f;
+    cursor:pointer;
+}
+.item-success {
+    color:#3c763d;
+    cursor:pointer;
+}
+.input-group-addon {
+    min-width: 120px;
+}
+.select2 {
+    min-width:120px;
+}
+.select2-container .select2-selection--single .select2-selection__rendered {
+    margin-top:0px;
+}
+li[aria-selected="true"] {
+    display:none;
+}
+.v-select .dropdown-menu .active {
+    display:none;
+}
+.v-select .dropdown-toggle .clear {
+    visibility: hidden;
+}
+.v-select.single .selected-tag {
+    position: absolute;
+}
+.container {
+    margin-top: 10px;
+}

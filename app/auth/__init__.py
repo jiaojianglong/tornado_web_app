@@ -2,14 +2,14 @@
 # -*- coding:utf-8 -*-
 # author: jiaojianglong
 # @time: 2020/07/13
-from .handlers.user import LoginHandler, UserHandler, LogoutHandler
+from app.auth.handlers.user import LoginHandler, UserHandler, LogoutHandler
 
-base_url = "/api/v1/user"
+base_url = "/api/v1/auth"
 handlers = [
-    (r"/login", LoginHandler),
-    (r"/logout", LogoutHandler),
-    (r"/", UserHandler),
-    (r"/([0-9]+)", UserHandler)
+    (r"/user_login", LoginHandler),
+    (r"/user_logout", LogoutHandler),
+    (r"/users", UserHandler),
+    (r"/users/([0-9a-z]+)", UserHandler)
 ]
 
 __all__ = [
