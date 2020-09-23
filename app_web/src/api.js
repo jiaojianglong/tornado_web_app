@@ -2,11 +2,11 @@ import axios from 'axios';
 import Vue from './main'
 import {HTTP} from '@/utils'
 
-// axios.defaults.baseURL = '/api/v1';
-// if(window.location.host === "127.0.0.1:8080"){
-//     axios.defaults.baseURL = 'http://127.0.0.1:8888';
-// }
-axios.defaults.baseURL = 'http://127.0.0.1:8888/api/v1';
+axios.defaults.baseURL = '/api/v1';
+if(window.location.host === "127.0.0.1:8082"){
+    axios.defaults.baseURL = 'http://127.0.0.1:8888/api/v1';
+}
+
 axios.defaults.timeout = 30000;
 axios.defaults.withCredentials = true;
 axios.interceptors.response.use(

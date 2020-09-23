@@ -1,11 +1,12 @@
 #!usr/bin/env python
 # -*- coding:utf-8 -*-
 
+import os
 import logging
 
 import tornado.web
 import tornado.options
-from settings import APPS
+from settings import APPS, ROOT
 
 
 def define_options():
@@ -22,6 +23,7 @@ def make_app():
     handlers = load_headlers()
     app = tornado.web.Application(
         handlers=handlers,
+        static_path=os.path.join(ROOT, "static")
     )
 
     app.listen(tornado.options.options.port)
