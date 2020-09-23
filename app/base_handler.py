@@ -4,6 +4,7 @@
 # @time: 2020/07/14
 import json
 import traceback
+from typing import Any
 
 from tornado.web import RequestHandler
 from tornado.concurrent import run_on_executor
@@ -125,7 +126,7 @@ class BaseHandler(RequestHandler):
 
         return inner
 
-    def get_json_argument(self, name, default: _ArgDefaultMarker = _ARG_DEFAULT):
+    def get_json_argument(self, name, default: Any = _ARG_DEFAULT):
         if not hasattr(self.request, "json_argument"):
             self.load_json()
         if name not in self.request.json_argument:
@@ -154,7 +155,13 @@ class BaseHandler(RequestHandler):
             reason = kwargs.get("reason")
             if "exc_info" in kwargs:
                 exception = kwargs["exc_info"][1]
-                if isinstance(exception, HTTPError) and exception.reason:
-                    reason = exception.reason
+                if isinstance(exception, HTTPError) and exception.log_message:
+                    reason = exception.log_message
             self.error_response(reason, status_code=status_code)
             self.finish()
+
+    def delete(self, id: str):
+        obj = self._datamodel_.get_or_404(id)
+        self.db_session.delete(obj)
+        self.db_session.commit()
+        return obj

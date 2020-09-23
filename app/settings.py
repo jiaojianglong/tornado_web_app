@@ -9,3 +9,5 @@ APPS = "auth"
 SQLALCHEMY_DATABASE_URI = "mysql+pymysql://root:123456@127.0.0.1:3306/tornado_web"
 
 JWT_SECRET = "as34gf3d8ge5r6he0r7"
+
+Administrators = ["焦江龙"]

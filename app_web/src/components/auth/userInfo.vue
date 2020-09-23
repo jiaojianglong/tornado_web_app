@@ -6,9 +6,16 @@
                     placement="bottom"
                     width="200"
                     trigger="hover">
-                    <el-button @click="logout">logout</el-button>
+                    <el-form label-position="right">
+                        <el-form-item label="用户名">
+                            <p>{{$store.state.user_info.username}}</p>
+                        </el-form-item>
+                        <el-form-item label="邮箱">
+                            <p>{{$store.state.user_info.email}}</p>
+                        </el-form-item>
+                    </el-form>
+                    <el-button @click="logout" style="float:right" type="danger">退出登录</el-button>
                     <el-avatar :src="user_logo" slot="reference" style="margin-top: 5px"></el-avatar>
-
                 </el-popover>
 
             </el-col>
@@ -20,8 +27,10 @@
     import user_logo from '@/assets/user_logo.png'
     import {mixin} from "@/mixin"
     import {API} from '@/service';
+    import ElFormItem from "../../../node_modules/element-ui/packages/form/src/form-item.vue";
 
     export default {
+        components: {ElFormItem},
         mixins: [mixin],
         data: function () {
             return {

@@ -71,7 +71,6 @@ export function API(self, key) {
                     }else {
                         self.items = response.data.data;
                         self.pageinfo = response.data.pageinfo;
-                        console.log(self.pageinfo,"****")
                     }
                     return resolve(self, response);
                 }).catch(error => {

@@ -81,11 +81,10 @@ export var mixin = {
                     self.form = {};
                 self.create_dialog = false;
                 self.select();
-            })
-                ;
+            });
             },
             edit: function (index, row) {
-                this.form = row;
+                this.form = JSON.parse(JSON.stringify(row));
                 this.is_update = true;
                 this.create_dialog = true
             },
@@ -116,7 +115,6 @@ export var mixin = {
                 this.select();
             },
             sizeChange: function (page_size) {
-                console.log("123", page_size);
                 this.pageinfo.page_size = page_size;
                 this.select();
             },

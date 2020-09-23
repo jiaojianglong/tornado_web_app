@@ -40,7 +40,6 @@
                             </template>
                             <el-menu-item index="/auth/user">用户管理</el-menu-item>
                             <el-menu-item index="/auth/group">群组管理</el-menu-item>
-                            <el-menu-item index="/auth/source">权限管理</el-menu-item>
                         </el-submenu>
                     </el-menu>
                 </el-aside>
@@ -88,7 +87,7 @@
             getUserInfo(){
                 API(this, "auth.user").default.getItem("self").then(res => {
                     if(res.status ==200){
-                        this.$store.commit("USER_INFO", res.data);
+                        this.$store.commit("USER_INFO", res.data.data);
                         this.$store.commit("LOGIN_STATUS", true);
                         this.get_info_end = true
                     }

@@ -52,7 +52,9 @@ export var api = {
     auth:{
         user: "/auth/users",
         userLogin: "/auth/user_login",
-        userLogout: "/auth/user_logout"
+        userLogout: "/auth/user_logout",
+        group: "/auth/groups",
+        source: "/auth/sources",
     },
     rpa: {
         rpa_log:"/rpa/rpa_log",

@@ -33,20 +33,10 @@ class BaseModel(Base, SerializerMixin):
     createtime = Column(DateTime(timezone=True), default=func.now(), comment='创建时间')
     updatetime = Column(DateTime(timezone=True), default=func.now(), onupdate=func.now(),
                         comment='修改时间')
-    is_enable = Column(Boolean, default=True, comment="是否可用")
 
     @classmethod
     def get_or_404(cls, id: str):
         item = cls.query.get(id)
         if item is None:
             raise NotFoundError("{}:{}".format(cls.__tablename__, id))
-
-        if not item.is_enable:
-            raise NotFoundError("已删除:{}:{}".format(cls.__tablename__, id))
-        return item
-
-    @classmethod
-    def remove(cls, id: str):
-        item = cls.get_or_404(id)
-        item.is_enable = False
         return item

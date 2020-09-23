@@ -6,8 +6,8 @@
 from app.base_handler import BaseHandler
 from app.errors import AlreadyExistError
 from app.errors import BadRequestError, ForbiddenError
-from app.auth.auth_handler import AuthHandler
-from app.auth.models.user import UserModel
+from app.auth.auth_handler import AuthHandler, PermissionHandler
+from app.auth.models.user import UserModel, GroupModel
 from app.utils.jwt_cookie import JWT
 
 
@@ -34,15 +34,18 @@ class LogoutHandler(AuthHandler):
         self.set_response(message="success")
 
 
-class UserHandler(AuthHandler):
+class UserHandler(PermissionHandler):
     _datamodel_ = UserModel
 
     def item(self, id):
         self.set_response(data=self.to_dict(self.current_user))
 
     def get(self):
-        username = self.get_argument("username")
-        users = self._datamodel_.query.filter(self._datamodel_.username == username).all()
+        username = self.get_argument("username", "")
+        query = self._datamodel_.query.filter(
+            self._datamodel_.username.like("%{}%".format(username)),
+        )
+        users = self.page.query_by_page(query)
         self.set_response(data=self.to_dict(users))
 
     def post(self):
@@ -58,19 +61,27 @@ class UserHandler(AuthHandler):
         self.set_response(data=self.to_dict(user))
 
     def put(self, id: str):
-        if self.current_user.id != int(id):
+        if self.current_user.id != int(id) and not self.current_user.is_admin:
             raise ForbiddenError()
-        old_password = self.get_argument("old_password")
-        new_password = self.get_argument("new_password")
-        if not self.current_user.valid_password(old_password):
-            raise BadRequestError("old_password wrong")
-        self.current_user.password = new_password
-        self.db_session.add(self.current_user)
+
+        username = self.get_json_argument("username")
+        email = self.get_json_argument("email")
+        groupnames = self.get_json_argument("groups", [])
+        user = self._datamodel_.query.get(id)
+        if groupnames:
+            groups = GroupModel.query.filter(
+                GroupModel.groupname.in_(groupnames)
+            ).all()
+            user.groups = groups
+        user.username = username
+        user.email = email
+        self.db_session.add(user)
         self.db_session.commit()
-        self.set_response(data=self.to_dict(self.current_user))
+        self.set_response(data=self.to_dict(user))
 
     def delete(self, id: str):
-        if self.current_user.id != int(id):
+        if self.current_user.id != int(id) and not self.current_user.is_admin:
             raise ForbiddenError()
-        super(UserHandler, self).delete(id)
+        user = super(UserHandler, self).delete(id)
+        self.set_response(message="success")
 

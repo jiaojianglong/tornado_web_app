@@ -5,12 +5,12 @@
 
 from app.auth.models.user import UserModel
 from app.base_handler import BaseHandler
-from app.errors import UnauthorizedError
+from app.errors import UnauthorizedError, ForbiddenError
 from app.utils.jwt_cookie import JWT
+from app import load_headlers
 
 
 class AuthHandler(BaseHandler):
-
     def auth(self):
         self.get_current_user()
 
@@ -22,13 +22,30 @@ class AuthHandler(BaseHandler):
 
         username = payload.get("username")
         self.current_user = UserModel.get_user_by_name(username)
-        print(self.current_user)
+
         return self.current_user
 
-    def get_login_url(self) -> str:
-        """Override to customize the login URL based on the request.
 
-        By default, we use the ``login_url`` application setting.
-        """
-        self.require_setting("login_url", "@tornado.web.authenticated")
-        return self.application.settings["login_url"]
+class PermissionHandler(AuthHandler):
+    def auth(self):
+        self.get_current_user()
+        self.check_permission()
+
+    def check_permission(self):
+        if self.current_user.is_admin:
+            return
+        sources = [source for group in self.current_user.groups for source in group.sources]
+        target_uris = self.get_target_uri()
+        for source in sources:
+            if source.get("uri") in target_uris:
+                if self.request.method.upper() in source.get("methods"):
+                    return
+        raise ForbiddenError()
+
+    def get_target_uri(self):
+        handlers = load_headlers()
+        target_uris = []
+        for handler in handlers:
+            if handler[1] == self.__class__:
+                target_uris.append(handler[0])
+        return target_uris

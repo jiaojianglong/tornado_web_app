@@ -6,18 +6,18 @@
 import json
 
 from sqlalchemy import Column, String, Text, Table, Integer, ForeignKey
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 
 from app.errors import CodeError, NotFoundError
 from app.utils.tools import md5
 from app.database import BaseModel
+from app.settings import Administrators
 
 user_group = Table(
     "user_group",
     BaseModel.metadata,
     Column("user_id", Integer, ForeignKey("user.id"), nullable=False, primary_key=True),
     Column("group_id", Integer, ForeignKey("group.id"), nullable=False, primary_key=True),
-    keep_existing=True
 )
 
 
@@ -27,9 +27,8 @@ class UserModel(BaseModel):
     username = Column(String(length=30), nullable=False, unique=True, comment='用户名')
     password_code = Column(String(length=128), nullable=False, comment='密码')
     email = Column(String(length=64), comment="邮箱")
-    groups = relationship("GroupModel", secondary=user_group)
 
-    serialize_rules = ("username", "email", "groups")
+    serialize_rules = ("-password_code",)
 
     @property
     def password(self):
@@ -49,7 +48,7 @@ class UserModel(BaseModel):
 
     @classmethod
     def search_one(cls, username: str):
-        user = cls.query.filter(cls.username == username, cls.is_enable == 1).first()
+        user = cls.query.filter(cls.username == username).first()
         return user
 
     @classmethod
@@ -57,9 +56,13 @@ class UserModel(BaseModel):
         user = cls.query.filter(cls.username == username).first()
         if user is None:
             raise NotFoundError("{} username:{}".format(cls.__tablename__, username))
-        if user.is_enable is False:
-            raise NotFoundError("已删除 {} username:{}".format(cls.__tablename__, username))
         return user
+
+    @property
+    def is_admin(self):
+        if self.username in Administrators:
+            return True
+        return False
 
 
 class GroupModel(BaseModel):
@@ -68,9 +71,13 @@ class GroupModel(BaseModel):
     groupname = Column(String(length=30), nullable=False, unique=True, comment='组名')
     source_ = Column(Text(), default="[]", nullable=False, comment="资源")
 
-    users = relationship("UserModel", secondary=user_group)
+    users = relationship(
+        'UserModel',
+        secondary=user_group,
+        backref=backref('groups', lazy='joined'),
+        lazy='dynamic')
 
-    serialize_rules = ("groupname", "sources", "users")
+    serialize_rules = ("-users.groups", "-source_", "sources")
     @property
     def sources(self):
         return json.loads(self.source_)
