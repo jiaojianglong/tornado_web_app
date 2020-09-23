@@ -29,10 +29,6 @@
                         background-color="#1e282c"
                         text-color="#fff"
                         active-text-color="#ffd04b">
-                        <!--<el-menu-item index="/">-->
-                        <!--<i class="el-icon-s-home"></i>-->
-                        <!--<span slot="title">任务管理</span>-->
-                        <!--</el-menu-item>-->
                         <el-submenu index="/rpa">
                             <template slot="title">
                                 <i class="el-icon-location"></i>
