@@ -19,6 +19,14 @@ var auth = ["user","group"].map(i => {
     };
 });
 
+var task = ["action","template", "task"].map(i => {
+    return {
+        path: '/task/' + i,
+        name:  'task.' + i,
+        component: lazyload("task/" + i)
+    };
+});
+
 var routers = [
     {
         path: '/',
@@ -34,6 +42,6 @@ var routers = [
 
 
 routers.push(...auth);
+routers.push(...task);
 
 export default new Router({routes:routers})
-

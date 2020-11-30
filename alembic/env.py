@@ -20,6 +20,8 @@ from os.path import dirname, join
 sys.path.append(dirname(dirname(__file__)))
 sys.path.append(join(dirname(dirname(__file__)),"app"))
 from app.auth.models.user import BaseModel
+from app.task.models.task import BaseModel
+from app.task.models.template import BaseModel
 target_metadata = BaseModel.metadata
 # target_metadata = None
 

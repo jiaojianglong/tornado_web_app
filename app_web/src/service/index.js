@@ -1,8 +1,10 @@
 import * as auth from '@/service/auth';
+import * as task from '@/service/task';
 import {HTTP} from '@/utils';
 
 var _api = {
     auth:auth,
+    task:task,
 };
 
 export function API(self, key) {

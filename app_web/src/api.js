@@ -54,15 +54,11 @@ export var api = {
         userLogin: "/auth/user_login",
         userLogout: "/auth/user_logout",
         group: "/auth/groups",
-        source: "/auth/sources",
+        source: "/auth/sources"
     },
-    rpa: {
-        rpa_log:"/rpa/rpa_log",
-
-        rpa_params:"/rpa/rpa_params",
-        rpa_task_anthology:"/rpa/rpa_task_anthology",
-        rpa_task:"/rpa/rpa_task",
-        aliyun_cookie:"/rpa/aliyun_cookie",
-        download_file:"/rpa/download_file",
-    },
+    task:{
+        action: "/task/action",
+        action_code: "/task/action_code",
+        template: "/task/template",
+    }
 };

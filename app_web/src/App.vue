@@ -29,13 +29,22 @@
                         background-color="#1e282c"
                         text-color="#fff"
                         active-text-color="#ffd04b">
-                        <el-submenu index="/rpa">
+                        <el-submenu index="/auth">
                             <template slot="title">
                                 <i class="el-icon-location"></i>
                                 <span>账号管理</span>
                             </template>
                             <el-menu-item index="/auth/user">用户管理</el-menu-item>
                             <el-menu-item index="/auth/group">群组管理</el-menu-item>
+                        </el-submenu>
+                        <el-submenu index="/task">
+                            <template slot="title">
+                                <i class="el-icon-location"></i>
+                                <span>任务管理</span>
+                            </template>
+                            <el-menu-item index="/task/action">动作管理</el-menu-item>
+                            <el-menu-item index="/task/template">模板管理</el-menu-item>
+                            <el-menu-item index="/task/task">任务执行</el-menu-item>
                         </el-submenu>
                     </el-menu>
                 </el-aside>

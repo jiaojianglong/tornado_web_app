@@ -2,8 +2,10 @@
     <div>
         <el-row :gutter="20">
             <el-col :span="4" v-for="app in apps">
-                <el-card shadow="never" bodyStyle="padding:5px">
-                    <el-link :href="host+getPath(app)" target="_blank" style="display: block; width:100%">
+
+                <el-link :href="host+getPath(app)" target="_blank"
+                         style="display: block; width:100%">
+                    <el-card shadow="never" bodyStyle="padding:5px">
                         <el-row type="flex" justify="space-between">
                             <el-col :span="12">
                                 <el-image
@@ -12,11 +14,13 @@
                                     fit="contain"></el-image>
                             </el-col>
                             <el-col :span="8">
-                                <h3 style="line-height: 50px; align-content: center; margin: auto">{{app}}</h3>
+                                <h3 style="line-height: 50px; align-content: center; margin: auto">
+                                    {{app}}</h3>
                             </el-col>
                         </el-row>
-                    </el-link>
-                </el-card>
+                    </el-card>
+                </el-link>
+
             </el-col>
         </el-row>
     </div>
@@ -37,10 +41,10 @@
                 is_local: window.location.host.indexOf("aixiaochu") == -1,
                 host: window.location.host.indexOf("aixiaochu") == -1 ? "http://127.0.0.1" : window.location.host,
                 path: {
-                    myadmin: {local: '8080', online: "myadmin", logo:myadminLogo},
-                    portainer: {local: '9000', online: "portainer", logo:portainerLogo},
-                    seafile: {local: '8899', online: "seafile", logo:seafileLogo},
-                    swagger: {local: '8081', online: "swagger", logo:swaggerLogo},
+                    myadmin: {local: '8080', online: "myadmin", logo: myadminLogo},
+                    portainer: {local: '9000', online: "portainer", logo: portainerLogo},
+                    seafile: {local: '8899', online: "seafile", logo: seafileLogo},
+                    swagger: {local: '8081', online: "swagger", logo: swaggerLogo},
                 },
                 apps: [
                     "myadmin",

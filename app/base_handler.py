@@ -126,6 +126,11 @@ class BaseHandler(RequestHandler):
 
         return inner
 
+    def get_json_argument_all(self):
+        if not hasattr(self.request, "json_argument"):
+            self.load_json()
+        return self.request.json_argument
+
     def get_json_argument(self, name, default: Any = _ARG_DEFAULT):
         if not hasattr(self.request, "json_argument"):
             self.load_json()
@@ -164,4 +169,10 @@ class BaseHandler(RequestHandler):
         obj = self._datamodel_.get_or_404(id)
         self.db_session.delete(obj)
         self.db_session.commit()
+        return obj
+
+    def update_all(self, obj, info, may_update):
+        for key, value in info.items():
+            if key in may_update:
+                setattr(obj, key, value)
         return obj
