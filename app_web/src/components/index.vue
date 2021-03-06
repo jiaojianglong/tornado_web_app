@@ -3,7 +3,7 @@
         <el-row :gutter="20">
             <el-col :span="4" v-for="app in apps">
 
-                <el-link :href="host+getPath(app)" target="_blank"
+                <el-link :href="getPath(app)" target="_blank"
                          style="display: block; width:100%">
                     <el-card shadow="never" bodyStyle="padding:5px">
                         <el-row type="flex" justify="space-between">
@@ -57,9 +57,9 @@
         methods: {
             getPath(name) {
                 if (this.is_local) {
-                    return ":" + this.path[name].local
+                    return "http://127.0.0.1:" + this.path[name].local
                 } else {
-                    return "/" + this.path[name].online
+                    return this.path[name].online+".aixiaochu.nat300.top:7441"
                 }
             },
             getLogo(name) {
