@@ -60,5 +60,7 @@ export var api = {
         action: "/task/action",
         action_code: "/task/action_code",
         template: "/task/template",
+        task: "/task/task",
+        params: "/task/params"
     }
 };

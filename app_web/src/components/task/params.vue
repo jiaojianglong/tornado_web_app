@@ -4,6 +4,7 @@
             <el-form-item v-for="parameter in params" :label="parameter.show_name">
                 <el-select
                     v-if="parameter.options"
+                    :disabled="disabled"
                     v-model="parameter.value"
                     @change="$emit('change', params)"
                     :multiple="parameter.type=='list'?true:false">
@@ -16,12 +17,15 @@
                 </el-select>
                 <el-input-number v-else-if="parameter.type && parameter.type=='int'"
                                  @change="$emit('change', params)"
+                                 :disabled="disabled"
                                  v-model="parameter.value"></el-input-number>
                 <el-switch v-else-if="parameter.type && parameter.type=='bool'"
                            @change="$emit('change', params)"
+                           :disabled="disabled"
                            v-model="parameter.value"></el-switch>
                 <el-input v-else v-model="parameter.value"
                           @change="$emit('change', params)"
+                          :disabled="disabled"
                           placeholder="请输入内容" ></el-input>
 
                 <el-tooltip v-if="parameter.describe" class="item" effect="dark" :content="parameter.describe" placement="top-start">
@@ -48,6 +52,10 @@
                 type: Array,
                 default: []
             },
+            disabled: {
+                type: Boolean,
+                default: false
+            }
         },
         data() {
             return {

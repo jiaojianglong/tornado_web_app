@@ -12,10 +12,6 @@ class Task(BaseModel):
     __tablename__ = "task"
 
     id = Column(Integer, primary_key=True, comment="任务id")
-
-    description = Column(String(1024), nullable=False, default="", comment="任务描述")
-    parameter_str = Column(Text, nullable=False, default="[]", comment="执行参数")
-    task_code = Column(String(80), nullable=False, default="", comment="执行脚本")
     status = Column(String(16), nullable=False, default="",
                          comment="任务状态")  # success failed executing unexecute waiting cancel
 
@@ -25,25 +21,21 @@ class Task(BaseModel):
         uselist=False,
         lazy='joined')
 
-    @property
-    def parameter(self):
-        return json.loads(self.parameter_str)
-
-    @parameter.setter
-    def parameter(self, value):
-        self.parameter_str = json.dumps(value)
+    template_id = Column(Integer, ForeignKey("task_template.id"))
+    template = relationship(
+        'TaskTemplate',
+        uselist=False,
+        lazy="joined"
+    )
 
     @classmethod
     def create_new(cls, task_data, user):
         task = cls(
-            description=task_data.get("description", ""),
-            task_code=task_data.get("task_code"),
+            template_id=task_data.get("id"),
             status="unexecute",
-            parameter=task_data.get("parameter", []),
             user = user,
         )
         task.add_actions(task_data.get("actions", []))
-        task.save()
         return task
 
     def add_actions(self, actions):
@@ -52,8 +44,8 @@ class Task(BaseModel):
             action_ins = TaskAction(**{
                 "action_code": action.get("action_code"),
             })
-            action_ins.task = self
-            action_ins.parameter = action.get("parameter", [])
+            action_ins.parameter = action.get("params", [])
+            action_ins.sequence = index
             action_ins.name = action.get("name", "") or action.get("value")
             actions_ins.append(action_ins)
 
@@ -96,10 +88,12 @@ class TaskAction(BaseModel):
             'actions',
             cascade='all,delete-orphan',
             lazy='joined',
-            order_by='Action.sequence.asc()'
+            order_by='TaskAction.sequence.asc()'
         ),
         uselist=False,
         lazy='joined')
+
+    serialize_rules = ("-task", "parameter")
 
     @property
     def parameter(self):
