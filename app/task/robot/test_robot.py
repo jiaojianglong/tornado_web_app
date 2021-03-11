@@ -45,5 +45,10 @@ params:[{
 }]
     """
 
+    def __init__(self, age, names, is_grade):
+        self.age = age
+        self.names = names
+        self.is_grade = is_grade
+
     def run(self):
-        pass
+        print("执行脚本", self.names, self.age, self.is_grade)

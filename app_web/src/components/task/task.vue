@@ -29,6 +29,7 @@
                             <el-table
                                 :data="items"
                                 @row-click="editParams"
+                                :highlight-current-row="true"
                                 style="width: 100%">
                                 <el-table-column
                                     prop="name"
@@ -53,6 +54,9 @@
                                             size="mini"
                                             type="danger"
                                             @click="remove(scope.$index, scope.row.id)">删除
+                                        </el-button>
+                                        <el-button type="primary" @click="execute(scope.$index, scope.row.id)">
+                                            执行
                                         </el-button>
                                     </template>
                                 </el-table-column>
@@ -87,7 +91,7 @@
 
                 </el-tab-pane>
                 <el-tab-pane label="执行记录" name="tasklist">
-
+    `               <task_record :templateId="template.id"></task_record>
                 </el-tab-pane>
             </el-tabs>
 
@@ -109,6 +113,7 @@
     export default {
         components: {
             'parameter_operate': lazyload('task/params'),
+            'task_record': lazyload('task/record'),
         },
         mixins: [mixin],
         data() {
@@ -118,7 +123,7 @@
                 template: {},
                 paramsList: [],
                 activeName: "params",
-                paramsEdit: false
+                paramsEdit: false,
             }
         },
         created() {
@@ -138,15 +143,6 @@
                 this.select();
                 this.newParams();
             },
-            createParams() {
-                API(this, "task.params").default.post(this.template).then(res => {
-                    if (res.code === 200) {
-                        HTTP.OK(res.data.message)
-                    } else {
-                        HTTP.ERROR(res.data.message)
-                    }
-                })
-            },
             newParams() {
                 this.form.actions = this.template.actions;
                 this.form.template_id = this.template.id;
@@ -160,7 +156,15 @@
                 this.is_update=true;
                 this.paramsEdit =false;
             },
-            execute(){}
+            execute(index, params_id){
+                API(this, "task.task").default.post({"params_id": params_id}).then(res => {
+                    if (res.status===200) {
+                        HTTP.OK(this, "执行成功")
+                    }else {
+                        HTTP.ERROR(this, res.data.message)
+                    }
+                })
+            }
         },
     }
 </script>
