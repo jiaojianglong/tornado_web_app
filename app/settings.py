@@ -16,6 +16,6 @@ Administrators = ["jiao"]
 ACTION_CONFIG = {
     "test_action": {
         "package": "app.task.robot.test_robot",
-        "action_class": "BaseRobot"
+        "action_class": "TestRobot"
     }
 }

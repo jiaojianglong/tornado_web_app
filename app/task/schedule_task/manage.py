@@ -4,6 +4,7 @@ from settings import ACTION_CONFIG
 import importlib
 from app.database import Session
 from app.task.models.task import TaskLog
+from app.task.schedule_task.action_log import ActionLog
 
 
 class Manage():
@@ -15,24 +16,29 @@ class Manage():
     def run(self):
         self.set_executing()
         for action in self.task.actions:
-            action.action_log = TaskLog(status="executing")
-            try:
-                action_config = ACTION_CONFIG.get(action.action_code)
-                action_module = importlib.import_module(action_config.get("package"))
-                params = {params.get("name"): params.get("value") for params in action.parameter}
-                print(params)
-                action_obj = getattr(action_module, action_config.get("action_class"))(**params)
-                action_obj.run()
-            except Exception as e:
-                action.action_log.error(str(e))
-                self.set_failed()
-            self.logger(action.action_log.info, "执行成功")
+            if not self.run_action(action):
+                break
+        else:
+            self.set_success()
 
-    def logger(self, func, message):
-        obj = func(message)
-        self.db_session.add(obj)
-        self.db_session.commit()
-
+    def run_action(self, action):
+        self.logger = ActionLog(self.db_session, action)
+        self.logger.executing_status("开始执行")
+        try:
+            action_config = ACTION_CONFIG.get(action.action_code)
+            action_module = importlib.import_module(action_config.get("package"))
+            params = {params.get("name"): params.get("value") for params in action.parameter}
+            self.logger.info("参数：{}".format(params))
+            action_obj = getattr(action_module, action_config.get("action_class"))(self,
+                                                                                   self.logger,
+                                                                                   **params)
+            action_obj.run()
+        except Exception as e:
+            self.logger.failed_status(str(e))
+            self.set_failed()
+            return False
+        self.logger.success_status("执行成功")
+        return True
 
     def set_failed(self):
         self.set_status("failed")

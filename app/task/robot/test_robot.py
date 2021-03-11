@@ -1,22 +1,9 @@
 #!usr/bin/env python
 # -*- coding:utf-8 -*-
-
-"""
-参数定义格式
-[
-{
-"type": "int" #["str", "int", "list", "bool", "file"]
-"describe": "描述",
-"name": "参数名",
-"nullable": False [True, False],
-"default":12,
-"options":[12, 13, 24, 36],
-}
-]
-"""
+from app.task.robot import BaseRobot
 
 
-class BaseRobot():
+class TestRobot(BaseRobot):
     """
 describe: 测试动作
 params:[{
@@ -44,11 +31,11 @@ params:[{
 "default": true
 }]
     """
-
-    def __init__(self, age, names, is_grade):
-        self.age = age
-        self.names = names
-        self.is_grade = is_grade
+    def __init__(self, logger, manage, **params):
+        super().__init__(logger, manage)
+        self.names = params.get("names")
+        self.age = params.get("age")
+        self.is_grade = params.get("is_grade")
 
     def run(self):
-        print("执行脚本", self.names, self.age, self.is_grade)
+        self.logger.info("执行脚本-{}-{}-{}".format(self.names, self.age, self.is_grade))

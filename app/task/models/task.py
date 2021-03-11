@@ -64,8 +64,8 @@ class TaskLog(BaseModel):
 
     id = Column(Integer, primary_key=True)
 
-    log_str = Column(Text, nullable=False, default="")
-    status = Column(String(27), nullable=False)
+    log_str = Column(Text, nullable=False, default="[]")
+    status = Column(String(27), nullable=False, default="executing")
 
     action_id = Column(Integer, ForeignKey("task_action.id",
                                            ondelete="CASCADE"))
@@ -102,6 +102,7 @@ class TaskLog(BaseModel):
         return self.add_log("error", message)
 
     def add_log(self, status, message):
+        print(self.action.name, status, message)
         logger = self.logger
         logger.append({
             "status": status,

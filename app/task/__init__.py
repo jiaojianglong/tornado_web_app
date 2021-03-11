@@ -5,6 +5,7 @@ from app.task.handlers.action import ActionHandler, ActionCodeHandler
 from app.task.handlers.template import TemplateHandler
 from app.task.handlers.task import TaskHandler
 from app.task.handlers.params import ParamsHandler
+from app.task.schedule_task import run
 
 base_url = "/api/v1/task"
 handlers = [
