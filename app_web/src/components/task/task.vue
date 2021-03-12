@@ -8,7 +8,7 @@
                 <div @click="selectTemplate(template)">
                     <div>{{template.name}}</div>
                     <div style="font-size: 12px; margin-top: 5px">描述：{{template.description}}</div>
-                    <div style="font-size: 12px">操作人：{{template.user.username}}</div>
+                    <div style="font-size: 12px" v-if="template.user">操作人：{{template.user.username}}</div>
                     <div style="font-size: 12px">更新时间：{{template.updatetime}}</div>
                 </div>
             </el-card>
@@ -16,7 +16,7 @@
         <el-card style="height:680px; margin-top: 20px;" shadow="never">
             <el-row style="margin-bottom: 20px">
                 <el-col :span="3"><h3>模板: {{template.name}}</h3></el-col>
-                <el-col :span="3"><h3>操作人：{{template.user.username}}</h3></el-col>
+                <el-col :span="3" v-if="template.user"><h3>操作人：{{template.user.username}}</h3></el-col>
                 <el-col :span="17"><h3>描述：{{template.description}}</h3></el-col>
                 <el-col :span="1">
                     <el-button type="primary" @click="execute">执行</el-button>
@@ -24,7 +24,7 @@
             </el-row>
             <el-tabs v-model="activeName" style="height:590px">
                 <el-tab-pane label="执行配置" name="params" style="height:550px;">
-                    <el-row style="width:100%;height:100%;" :gutter="50">
+                    <el-row style="width:100%;height:100%;" :gutter="30">
                         <el-col :span="12" style="height:100%; overflow-y: auto">
                             <el-table
                                 :data="items"
@@ -51,7 +51,6 @@
                                     </template>
                                     <template slot-scope="scope">
                                         <el-button
-                                            size="mini"
                                             type="danger"
                                             @click="remove(scope.$index, scope.row.id)">删除
                                         </el-button>
@@ -124,6 +123,7 @@
                 paramsList: [],
                 activeName: "params",
                 paramsEdit: false,
+                items: [],
             }
         },
         created() {

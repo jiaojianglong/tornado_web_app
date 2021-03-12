@@ -5,4 +5,5 @@ export var action_code = api.default(api.task.action_code);
 export var template = api.default(api.task.template);
 export var task = api.default(api.task.task);
 export var params = api.default(api.task.params);
+export var task_log = api.default(api.task.task_log);
 

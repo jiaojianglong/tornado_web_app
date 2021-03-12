@@ -27,6 +27,8 @@ class Task(BaseModel):
         uselist=False,
         lazy='joined')
 
+    serialize_rules = ("-actions",)
+
     template_id = Column(Integer, ForeignKey("task_template.id"))
     template = relationship(
         'TaskTemplate',
@@ -82,6 +84,8 @@ class TaskLog(BaseModel):
         lazy='joined'
         )
 
+    serialize_rules = ("-action", "logger", "-log_str")
+
     @property
     def logger(self):
         if self.log_str:
@@ -90,16 +94,7 @@ class TaskLog(BaseModel):
 
     @logger.setter
     def logger(self, value):
-        self.log_str = json.dumps(value)
-
-    def info(self, message):
-        return self.add_log("info", message)
-
-    def warning(self, message):
-        return self.add_log("warning", message)
-
-    def error(self, message):
-        return self.add_log("error", message)
+        self.log_str = json.dumps(value, ensure_ascii=False)
 
     def add_log(self, status, message):
         print(self.action.name, status, message)

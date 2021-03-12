@@ -4,6 +4,7 @@
             <el-col :span="12">
                 <el-table
                     :data="items"
+                    @row-click="selectTask"
                     style="width: 100%; height:480px">
                     <el-table-column label="模板">
                         <template slot-scope="scope">
@@ -35,7 +36,17 @@
                 </el-table>
                 <paginate :pageinfo="pageinfo" @page-change="pageChange" @size-change="sizeChange"/>
             </el-col>
-            <el-col :span="12">123</el-col>
+            <el-col :span="12">
+                <div style="height:535px; background-color: #000000; color:#ffffff">
+                    <div v-for="action in taskLog">
+                        {{action.name+"-"+action.action_code}}
+                        <div v-for="log in action.action_log.logger">
+                            {{log.time+"-"+log.message}}
+                        </div>
+                    </div>
+                    {{taskLog}}
+                </div>
+            </el-col>
         </el-row>
     </div>
 </template>
@@ -66,6 +77,8 @@
                     waiting: "info",
                     cancel: "info",
                 },
+                taskLog: [],
+                items: []
             }
         },
         watch: {
@@ -82,6 +95,12 @@
                 } else if (row.status === 'success') {
                     return 'success-row'
                 }
+            },
+            selectTask(row, column, event) {
+                console.log(row);
+                API(this, "task.task_log").default.get({task_id: row.id}).then(res => {
+                    this.taskLog = res.data.data;
+                })
             }
         }
     }

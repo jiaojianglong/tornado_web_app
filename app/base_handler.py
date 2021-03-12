@@ -94,7 +94,7 @@ class BaseHandler(RequestHandler):
     def set_response(self, data=None, message="", status_code=200):
         self.response_data = {
             "status_code": status_code,
-            "data": data or {},
+            "data": data or [],
             "message": message,
         }
 
