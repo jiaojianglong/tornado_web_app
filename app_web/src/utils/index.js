@@ -74,7 +74,7 @@ export var HTTP = {
             options.type = "error";
             if ("message" in msg.response.data) {
                 // satori 的接口
-                options.message = msg.response.data.message.slice(0,100);
+                options.message = msg.response.data.message.slice(0,1000);
             } else if ("error" in msg.response.data) {
                 // satori 转发的 eneru 接口
                 options.message = msg.response.data.error;
@@ -82,7 +82,7 @@ export var HTTP = {
         }else {
             if ("message" in msg.response.data) {
                 // satori 的接口
-                options.message = msg.response.data.message.slice(0,100);
+                options.message = msg.response.data.message.slice(0,1000);
             } else if ("error" in msg.response.data) {
                 // satori 转发的 eneru 接口
                 options.message = msg.response.data.error;

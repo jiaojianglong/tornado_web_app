@@ -86,7 +86,7 @@ class BaseHandler(RequestHandler):
         response = {
             "status_code": status_code,
             "data": data,
-            "message": message,
+            "message": message or "",
             "pageinfo": self.page.page_info
         }
         self.write(response)
@@ -162,6 +162,8 @@ class BaseHandler(RequestHandler):
                 exception = kwargs["exc_info"][1]
                 if isinstance(exception, HTTPError) and exception.log_message:
                     reason = exception.log_message
+                else:
+                    reason = str(kwargs["exc_info"])
             self.error_response(reason, status_code=status_code)
             self.finish()
 
