@@ -19,5 +19,3 @@ app_web/*.suo
 app_web/*.ntvs*
 app_web/*.njsproj
 app_web/*.sln
-
-app/static/
