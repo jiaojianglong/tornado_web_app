@@ -37,14 +37,6 @@
                 <paginate :pageinfo="pageinfo" @page-change="pageChange" @size-change="sizeChange"/>
             </el-col>
             <el-col :span="12" style="height:545px; overflow-y: auto">
-                <!--<div style="height:545px; background-color: #000000; color:#ffffff; overflow-y: auto">-->
-                <!--<div v-for="action in taskLog">-->
-                <!--{{action.name+"-"+action.action_code}}-->
-                <!--<el-tag :type="status_type[action.action_log.status]" effect="dark">{{action.action_log.status}}</el-tag>-->
-                <!---->
-                <!--<pre v-for="log in action.action_log.logger">{{log.time+"-"+log.message}}</pre>-->
-                <!--</div>-->
-                <!--{{taskLog}}-->
                 <el-timeline>
                     <el-timeline-item v-for="action in taskLog" timestamp="" placement="top">
                         <h4 style="display: inline-block; margin-right: 10px">
