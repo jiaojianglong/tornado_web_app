@@ -8,7 +8,9 @@
                 <div @click="selectTemplate(template)">
                     <div>{{template.name}}</div>
                     <div style="font-size: 12px; margin-top: 5px">描述：{{template.description}}</div>
-                    <div style="font-size: 12px" v-if="template.user">操作人：{{template.user.username}}</div>
+                    <div style="font-size: 12px" v-if="template.user">
+                        操作人：{{template.user.username}}
+                    </div>
                     <div style="font-size: 12px">更新时间：{{template.updatetime}}</div>
                 </div>
             </el-card>
@@ -16,7 +18,8 @@
         <el-card style="height:680px; margin-top: 20px;" shadow="never">
             <el-row style="margin-bottom: 20px">
                 <el-col :span="3"><h3>模板: {{template.name}}</h3></el-col>
-                <el-col :span="3" v-if="template.user"><h3>操作人：{{template.user.username}}</h3></el-col>
+                <el-col :span="3" v-if="template.user"><h3>操作人：{{template.user.username}}</h3>
+                </el-col>
                 <el-col :span="17"><h3>描述：{{template.description}}</h3></el-col>
                 <el-col :span="1">
                     <el-button type="primary" @click="execute">执行</el-button>
@@ -54,7 +57,8 @@
                                             type="danger"
                                             @click="remove(scope.$index, scope.row.id)">删除
                                         </el-button>
-                                        <el-button type="primary" @click="execute(scope.$index, scope.row.id)">
+                                        <el-button type="primary"
+                                                   @click="execute(scope.$index, scope.row.id)">
                                             执行
                                         </el-button>
                                     </template>
@@ -66,39 +70,46 @@
                                 <el-col :span="23">
                                     <div class="demo-input-suffix">
                                         配置名：
-                                        <el-input style="width:60%" :disabled="!paramsEdit" v-model="form.name"
+                                        <el-input style="width:60%" :disabled="!paramsEdit"
+                                                  v-model="form.name"
                                                   placeholder="请输入内容"></el-input>
                                     </div>
                                 </el-col>
                                 <el-col :span="1">
-                                    <el-button v-if="!paramsEdit" @click="paramsEdit=true" type="primary">编辑</el-button>
-                                    <el-button v-else @click="paramsEdit=false" type="primary">取消编辑</el-button>
+                                    <el-button v-if="!paramsEdit" @click="paramsEdit=true"
+                                               type="primary">编辑
+                                    </el-button>
+                                    <el-button v-else @click="paramsEdit=false" type="primary">
+                                        取消编辑
+                                    </el-button>
                                 </el-col>
                             </el-row>
                             <el-timeline style="margin-top: 20px">
                                 <el-timeline-item v-for="action in form.actions" timestamp=""
                                                   placement="top">
                                     <h4>{{action.name}}</h4>
-                                    <parameter_operate v-model="action.params" :disabled="!paramsEdit"
+                                    <parameter_operate v-model="action.params"
+                                                       :disabled="!paramsEdit"
                                                        mode="params_show"></parameter_operate>
                                 </el-timeline-item>
                             </el-timeline>
-                            <el-button type="primary" v-if="is_update" @click="update">保存</el-button>
+                            <el-button type="primary" v-if="is_update" @click="update">保存
+                            </el-button>
                             <el-button type="primary" v-else @click="create">保存</el-button>
                         </el-col>
                     </el-row>
 
                 </el-tab-pane>
                 <el-tab-pane label="执行记录" name="tasklist">
-    `               <task_record :templateId="template.id"></task_record>
+                    <task_record :templateId="template.id"></task_record>
                 </el-tab-pane>
             </el-tabs>
 
         </el-card>
         <delete-modal
-                ref="deletemodal"
-                :name="'项目'"
-                :role="role" />
+            ref="deletemodal"
+            :name="'项目'"
+            :role="role"/>
     </div>
 </template>
 
@@ -117,7 +128,7 @@
         mixins: [mixin],
         data() {
             return {
-                role:"task.params",
+                role: "task.params",
                 templates: [],
                 template: {},
                 paramsList: [],
@@ -148,19 +159,19 @@
                 this.form.template_id = this.template.id;
                 this.form.name = "";
                 this.paramsEdit = true;
-                this.is_update=false;
+                this.is_update = false;
             },
             editParams(row, column, event) {
                 this.form = {};
                 this.form = row;
-                this.is_update=true;
-                this.paramsEdit =false;
+                this.is_update = true;
+                this.paramsEdit = false;
             },
-            execute(index, params_id){
+            execute(index, params_id) {
                 API(this, "task.task").default.post({"params_id": params_id}).then(res => {
-                    if (res.status===200) {
+                    if (res.status === 200) {
                         HTTP.OK(this, "执行成功")
-                    }else {
+                    } else {
                         HTTP.ERROR(this, res.data.message)
                     }
                 })

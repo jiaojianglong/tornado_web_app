@@ -5,7 +5,7 @@
                 <el-table
                     :data="items"
                     @row-click="selectTask"
-                    style="width: 100%; height:480px">
+                    style="width: 100%; height:505px">
                     <el-table-column label="模板">
                         <template slot-scope="scope">
                             <p>{{scope.row.template.name}}</p>
@@ -36,16 +36,33 @@
                 </el-table>
                 <paginate :pageinfo="pageinfo" @page-change="pageChange" @size-change="sizeChange"/>
             </el-col>
-            <el-col :span="12">
-                <div style="height:535px; background-color: #000000; color:#ffffff">
-                    <div v-for="action in taskLog">
-                        {{action.name+"-"+action.action_code}}
-                        <div v-for="log in action.action_log.logger">
-                            {{log.time+"-"+log.message}}
+            <el-col :span="12" style="height:545px; overflow-y: auto">
+                <!--<div style="height:545px; background-color: #000000; color:#ffffff; overflow-y: auto">-->
+                <!--<div v-for="action in taskLog">-->
+                <!--{{action.name+"-"+action.action_code}}-->
+                <!--<el-tag :type="status_type[action.action_log.status]" effect="dark">{{action.action_log.status}}</el-tag>-->
+                <!---->
+                <!--<pre v-for="log in action.action_log.logger">{{log.time+"-"+log.message}}</pre>-->
+                <!--</div>-->
+                <!--{{taskLog}}-->
+                <el-timeline>
+                    <el-timeline-item v-for="action in taskLog" timestamp="" placement="top">
+                        <h4 style="display: inline-block; margin-right: 10px">
+                            {{action.name + "-" + action.action_code}}</h4>
+                        <el-tag :type="status_type[action.action_log.status]"
+                                style="margin-right: 10px">{{action.action_log.status}}
+                        </el-tag>
+                        <i class="el-icon-loading" v-if="action.action_log.status=='executing'"
+                           style="color:#409EFF"></i>
+
+                        <i class="el-icon-arrow-down" v-if="showLogs.indexOf(action.id) != -1" @click="showLog(action)"></i>
+                        <i class="el-icon-arrow-right" v-else @click="showLog(action)"></i>
+                        <div v-if="showLogs.indexOf(action.id) != -1">
+                            <pre v-for="log in action.action_log.logger">{{log.time + "-" + log.message}}</pre>
                         </div>
-                    </div>
-                    {{taskLog}}
-                </div>
+                    </el-timeline-item>
+                </el-timeline>
+                <!--</div>-->
             </el-col>
         </el-row>
     </div>
@@ -78,7 +95,9 @@
                     cancel: "info",
                 },
                 taskLog: [],
-                items: []
+                items: [],
+                activeNames: [],
+                showLogs: []
             }
         },
         watch: {
@@ -101,6 +120,15 @@
                 API(this, "task.task_log").default.get({task_id: row.id}).then(res => {
                     this.taskLog = res.data.data;
                 })
+            },
+            showLog(action){
+                var index = this.showLogs.indexOf(action.id);
+                if (index != -1){
+                    this.showLogs.splice(index, 1);
+                }else{
+                    this.showLogs.push(action.id)
+                }
+
             }
         }
     }
