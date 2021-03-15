@@ -7,6 +7,7 @@ import logging
 import tornado.web
 import tornado.options
 from settings import APPS, ROOT
+from app.wechat_robot import TcpClient
 
 
 def define_options():

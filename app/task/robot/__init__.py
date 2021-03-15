@@ -21,3 +21,9 @@ class BaseRobot():
     def __init__(self, manage, logger):
         self.logger = logger
         self.manage = manage
+
+
+class WebRobot(BaseRobot):
+    LocalDriver=False
+
+

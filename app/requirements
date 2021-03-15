@@ -6,3 +6,5 @@ pymysql==0.9.0
 alembic==1.4.2
 pyjwt==1.7.1
 schedule
+selenium-3.141.0
+psutil-5.8.0

@@ -19,3 +19,9 @@ ACTION_CONFIG = {
         "action_class": "TestRobot"
     }
 }
+
+WXBot = {
+    "host":"127.0.0.1",
+    "accept_port": 8666,
+    "send_port": 8777
+}
