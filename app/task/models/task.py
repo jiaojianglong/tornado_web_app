@@ -134,7 +134,10 @@ class TaskAction(BaseModel):
 
     @property
     def parameter(self):
-        return json.loads(self.parameter_str)
+        if self.parameter_str and self.parameter_str!="null":
+            return json.loads(self.parameter_str)
+        else:
+            return []
 
     @parameter.setter
     def parameter(self, value):

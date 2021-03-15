@@ -17,6 +17,14 @@ ACTION_CONFIG = {
     "test_action": {
         "package": "app.task.robot.test_robot",
         "action_class": "TestRobot"
+    },
+    "wechat_friend":{
+        "package": "app.task.robot.wechat.get_wexin_friend",
+        "action_class": "WeChatFriends"
+    },
+    "send_message":{
+        "package": "app.task.robot.wechat.send_message",
+        "action_class": "SendMessageRobot"
     }
 }
 

@@ -31,11 +31,6 @@ params:[{
 "default": true
 }]
     """
-    def __init__(self, logger, manage, **params):
-        super().__init__(logger, manage)
-        self.names = params.get("names")
-        self.age = params.get("age")
-        self.is_grade = params.get("is_grade")
 
     def run(self):
-        self.logger.info("执行脚本-{}-{}-{}".format(self.names, self.age, self.is_grade))
+        self.logger.info("执行脚本-{}-{}-{}".format(self.params.get("names"), self.params.get("age"), self.params.get("is_grade")))

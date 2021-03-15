@@ -3,6 +3,5 @@ from tornado import gen
 
 
 class TextMessage(BaseMessage):
-    @gen.coroutine
     def handle(self):
         self.reply_text(self.text)

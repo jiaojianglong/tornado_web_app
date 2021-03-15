@@ -18,9 +18,10 @@
 
 class BaseRobot():
 
-    def __init__(self, manage, logger):
+    def __init__(self, manage, logger, **params):
         self.logger = logger
         self.manage = manage
+        self.params = params
 
 
 class WebRobot(BaseRobot):
