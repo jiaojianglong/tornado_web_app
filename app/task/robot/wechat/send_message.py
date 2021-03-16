@@ -21,4 +21,4 @@ params:[{
     def run(self):
         wxid = self.params.get("wxid")
         message = self.params.get("message")
-        self.WeChat.send_message(wxid, message)
+        self.wechat_robot.send_message(wxid, message)

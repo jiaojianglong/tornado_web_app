@@ -2,13 +2,6 @@
 # -*- coding:utf-8 -*-
 
 
-from settings import WXBot
-from app.wechat_robot.client import TcpClient
+from app.wechat_robot.robot import Robot
 
-tcp_client = TcpClient(
-        WXBot.get("host"),
-        WXBot.get("accept_port"),
-        WXBot.get("send_port"),
-        )
-tcp_client.start_accept()
-tcp_client.start_send()
+wechat_robot = Robot()

@@ -3,11 +3,9 @@ import time
 
 from tornado import gen
 from tornado.tcpclient import TCPClient
-from tornado.queues import Queue
 from threading import Thread
 
 from app.wechat_robot.message import message
-from app.wechat_robot.parser import Parser
 
 
 class TcpClient(object):
@@ -24,7 +22,8 @@ class TcpClient(object):
 
     @gen.coroutine
     def start_accept(self):
-        self.accept_stream = yield TCPClient().connect(self.host, self.accept_port, af=socket.AF_INET)
+        self.accept_stream = yield TCPClient().connect(self.host, self.accept_port,
+                                                       af=socket.AF_INET)
         while True:
             print("开始接收消息")
             res = yield self.accept_stream.read_until(self.delimiter)
@@ -43,7 +42,6 @@ class TcpClient(object):
                     res = yield self.send_stream.read_until(self.delimiter)
                     res = res.decode("gbk").rstrip("|EOF|")
                     res = {"res": res, "id": msg.get("id")}
-                    print(res)
                     self.accept_queue.append(res)
                 else:
                     self.send_stream.write(msg.get("msg").encode("gbk"))
@@ -63,14 +61,6 @@ class TcpClient(object):
         msg = {"msg": self.decollator.join(msg)}
         self.send_queue.append(msg)
 
-    def get_friends(self):
-        res = self.send_and_return(["Friend"])
-        friends = Parser.get_friends(res)
-        return friends
-
-    def send_message(self, to, message):
-        self.send(["Text", to, message])
-
     @gen.coroutine
     def handle_message(self, msg):
         print("接收消息：", msg)
@@ -80,4 +70,3 @@ class TcpClient(object):
                 Thread(target=msg.handle).start()
         except Exception as e:
             print(e)
-

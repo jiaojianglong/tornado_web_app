@@ -7,6 +7,6 @@ describe: 获取微信好友
 params:[]
     """
     def run(self):
-        friends = self.WeChat.get_friends()
+        friends = self.wechat_robot.get_friends()
         self.logger.info(friends)
         return friends
